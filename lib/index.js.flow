@@ -1,6 +1,25 @@
 // @flow
 
+type Value = string | boolean | number;
+
+type Values = {
+  [key: string]: Value | Array<Value>
+};
+
+type RenderStyle = 'default' | 'password' | 'invisible';
+
+type Choice = {|
+  title: string,
+  value: Value
+|};
+
+type MutliSelectChoice = {|
+  ...Choice,
+  selected?: boolean
+|};
+
 type PromptType =
+  | null
   | 'text'
   | 'password'
   | 'invisible'
@@ -12,26 +31,98 @@ type PromptType =
   | 'multiselect'
   | 'autocomplete';
 
-type Question = {|
-  type?: ?PromptType | Function,
-  name?: string | Function,
-  message?: string | Function,
-  initial?: string | Function,
-  format?: Function
+type PromptFuncType = (
+  prev: Value,
+  values: Values,
+  prompt: Prompt
+) => PromptType;
+
+type Prompt = {|
+  type?: PromptType | PromptFuncType,
+  name?: string | PromptFuncType,
+  message?: string | PromptFuncType,
+  initial?: string | PromptFuncType,
+  format?: PromptFuncType
 |};
 
 type Options = {|
-  onSubmit?: () => void | boolean,
-  onCancel?: () => void | boolean
+  onSubmit?: () => void | true,
+  onCancel?: () => void | true
 |};
 
-type Result = {|
+declare var Prompts: {|
+  (questions: Prompt | Array<Prompt>, opts?: Options): Promise<Values>,
 
+  prompt: (
+    questions: Prompt | Array<Prompt>,
+    opts?: Options
+  ) => Promise<Values>,
+
+  prompts: {|
+    text: (
+      message: string,
+      initial?: string,
+      style?: RenderStyle
+    ) => Promise<Value>,
+
+    password: (
+      message: string,
+      initial?: string
+    ) => Promise<Value>,
+
+    invisible: (
+      message: string,
+      initial?: string
+    ) => Promise<Value>,
+
+    number: (
+      message: string,
+      initial: number,
+      max?: number,
+      min?: number,
+      style?: RenderStyle
+    ) => Promise<Value>,
+
+    confirm: (
+      message: string,
+      initial?: boolean
+    ) => Promise<Value>,
+
+    list: (
+      message: string,
+      initial?: string,
+      style?: RenderStyle,
+      separator?: string
+    ) => Promise<Value>,
+
+    toggle: (
+      message: string,
+      initial?: boolean,
+      active?: string,
+      inactive?: string
+    ) => Promise<Value>,
+
+    select: (
+      message: string,
+      choices: Array<Object>,
+      initial?: number
+    ) => Promise<Value>,
+
+    multiselect: (
+      message: string,
+      choices: Array<MultiSelectChoice>,
+      max?: number,
+      hint?: string
+    ) => Promise<Value>,
+
+    autocomplete: (
+      message: string,
+      choices: Array<Object>,
+      suggest?: (input: string, choices: Array<Choice>) => Promise<Array<Choice>>,
+      limit?: number,
+      style?: RenderStyle
+    ) => Promise<Value>
+  |},
 |};
 
-declare function prompt(
-  questions: Question | Array<Question>,
-  opts?: Options
-): Result;
-
-module.exports = prompt;
+module.exports = Prompts;
