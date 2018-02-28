@@ -1,0 +1,37 @@
+// @flow
+
+type PromptType =
+  | 'text'
+  | 'password'
+  | 'invisible'
+  | 'number'
+  | 'confirm'
+  | 'list'
+  | 'toggle'
+  | 'select'
+  | 'multiselect'
+  | 'autocomplete';
+
+type Question = {|
+  type?: ?PromptType | Function,
+  name?: string | Function,
+  message?: string | Function,
+  initial?: string | Function,
+  format?: Function
+|};
+
+type Options = {|
+  onSubmit?: () => void | boolean,
+  onCancel?: () => void | boolean
+|};
+
+type Result = {|
+
+|};
+
+declare function prompt(
+  questions: Question | Array<Question>,
+  opts?: Options
+): Result;
+
+module.exports = prompt;

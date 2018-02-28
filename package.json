@@ -15,7 +15,8 @@
   ],
   "scripts": {
     "start": "node lib/index.js",
-    "test": "tape test/*.js | tap-spec"
+    "test": "tape test/*.js | tap-spec",
+    "flow": "flow test/flow.js --max-warnings 0"
   },
   "keywords": [
     "ui",
@@ -31,6 +32,7 @@
     "sisteransi": "^0.1.0"
   },
   "devDependencies": {
+    "flow-bin": "^0.66.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.8.0"
   }
